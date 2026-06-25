@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: source_sangouman # Nom logique que vous donnerez à votre source dans dbt
+    schema: bronze         # Le vrai nom du schéma dans votre base PostgreSQL (ex: public, raw, etc.)
+    description: "Données brutes existantes dans la base PostgreSQL"
+    
+    tables:
+      - name: individual  # Le nom exact de votre première table Postgres
+        description: "Table contenant les informations des individus"
+        tests:
+          - unique:
+              column_name: extId # dbt vérifiera automatiquement s'il y a des doublons
+          - not_null:
+              column_name: extId
+
+      - name: commandes     # Une deuxième table exemple
+        description: "Historique des transactions et commandes"
+        columns:
+          - name: status
+            description: "Statut de la commande (completed, pending, cancelled)"
