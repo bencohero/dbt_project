@@ -1,9 +1,9 @@
 
-{{ config(materialized='view') }} -- Les modèles de staging sont souvent des vues légères
+-- {{ config(materialized='view') }} -- Les modèles de staging sont souvent des vues légères
 
 with source_data as (
 
-    select * from {{ source('source_sangouman', 'individual') }}
+    select * from {{ source('dss', 'individual') }}
 
 ),
 
@@ -30,6 +30,8 @@ cleaned_data as (
                 WHEN religion = '6'                              THEN 'sans religion'
                 ELSE 'unk'
             END AS religion,
+        father_uuid,
+        mother_uuid,
         insertdate as inserted_at,
         NOW() as dwh_insertdate
     from source_data
@@ -37,3 +39,4 @@ cleaned_data as (
 )
 
 select * from cleaned_data
+

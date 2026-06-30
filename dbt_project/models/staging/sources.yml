@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: source_sangouman # Nom logique que vous donnerez à votre source dans dbt
+  - name: dss # Nom logique que vous donnerez à votre source dans dbt
     schema: bronze         # Le vrai nom du schéma dans votre base PostgreSQL (ex: public, raw, etc.)
     description: "Données brutes existantes dans la base PostgreSQL"
     
@@ -14,8 +14,29 @@ sources:
           - not_null:
               column_name: extId
 
-      - name: commandes     # Une deuxième table exemple
-        description: "Historique des transactions et commandes"
+      - name: death     
+        description: "Table contenant les informations de décès"
         columns:
           - name: status
             description: "Statut de la commande (completed, pending, cancelled)"
+      
+      - name: inmigration
+        description: "Table contenant les information d'immigration"
+      
+      - name: outmigration
+        description: "Table contenant les information d'émigration"
+
+      - name: location
+        description: "Table contenant les information de localisation"
+
+      - name: pregnancyobservation
+        description: "Table contenant les information d'observation de grossesse"
+      
+      - name: pregnancyoutcome
+        description: "Table contenant les information d'issue de grossesse"
+      
+      - name: residency
+        description: "Table contenant les informations de residence"
+
+      - name: membership
+        description: "Table contenant les informations d'appartenance"

@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_residency
+    description: "Modèle de staging pour l'historique des résidences des individus"
+    columns:
+      - name: residency_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: individual_uuid
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_individual')
+                field: individual_uuid
+
+
+unit_tests:
+  - name: test_residency_duration_buckets
+    model: stg_residency
+    
+    given:
+      - input: source('dss', 'residency')
+        rows:
+          # Cas 1 : Résidence en cours (enddate IS NULL), démarrée il y a exactement 2 mois par rapport à aujourd'hui
+          - { uuid: 'R1', starttype: 'BIR', startdate: "2026-04-25", endtype: null, enddate: null, individual_uuid: 'I1', location_uuid: 'L1' }
+          # Cas 2 : Résidence fermée (Outmigration), durée exacte de 14 mois
+          - { uuid: 'R2', starttype: 'ENU', startdate: '2024-01-01', endtype: 'OMG', enddate: '2025-03-15', individual_uuid: 'I2', location_uuid: 'L1' }
+          # Cas 3 : Résidence fermée (Décès), durée de plus de 5 ans (60 mois)
+          - { uuid: 'R3', starttype: 'IMG', startdate: '2020-01-01', endtype: 'DTH', enddate: '2025-06-01', individual_uuid: 'I3', location_uuid: 'L2' }
+
+    expect:
+      rows:
+        - { residency_uuid: 'R1', starttype: 'birth', endtype: null, duree_months: 2, classe_duree_mois: '0-5 mois' }
+        - { residency_uuid: 'R2', starttype: 'enu', endtype: 'outmigration', duree_months: 14, classe_duree_mois: '12-17 mois' }
+        - { residency_uuid: 'R3', starttype: 'inmigration', endtype: 'death', duree_months: 65, classe_duree_mois: '60 mois et plus' }

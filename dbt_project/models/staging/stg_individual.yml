@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_individual
+    description: "Modèle de staging nettoyé pour les individus"
+    columns:
+      - name: individual_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: ID_individu
+        data_tests:
+          - not_null
+          - unique
+      - name: father_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                field: individual_uuid
+                to: ref('stg_individual')
+      - name: mother_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                field: individual_uuid
+                to: ref('stg_individual')
+
+unit_tests:
+  - name: test_dob_cannot_be_greater_than_today
+    model: stg_individual
+    
+    given:
+      - input: source('dss', 'individual')
+        rows:
+          # On simule les colonnes d'entrée (brutes)
+          - { uuid: '1', extId: 'E1', firstName: 'Jean', lastName: 'Dupont', dob: '2026-01-01', gender: 'M', religion: '1' }
+          - { uuid: '2', extId: 'E2', firstName: 'Awa',  lastName: 'Traoré', dob: '2035-12-31', gender: 'F', religion: '2' } # Date dans le futur
+          - { uuid: '3', extId: 'E3', firstName: 'Marc', lastName: 'Koffi',  dob: null,         gender: 'M', religion: '5' } # Date Null
+
+    expect:
+      rows:
+        # On valide les colonnes de sortie (renommées et transformées)
+        - { individual_uuid: '1', ID_individu: 'E1', age_class: '0-<1' }
+        - { individual_uuid: '2', ID_individu: 'E2', age_class: 'unknown' } # Le futur est bien intercepté
+        - { individual_uuid: '3', ID_individu: 'E3', age_class: 'unknown' }

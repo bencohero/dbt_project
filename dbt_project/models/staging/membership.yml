@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_membership
+    description: "Modèle de staging pour l'appartenance des individus aux groupes sociaux"
+    columns:
+      - name: membership_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: individual_uuid
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_individual')
+                field: individual_uuid
+
+unit_tests:
+  - name: test_membership_status_and_durations
+    model: stg_membership
+    
+    given:
+      - input: source('dss', 'membership')
+        rows:
+          # Cas 1 : Membre actif toujours présent, inscrit il y a 10 jours (base courante juin 2026)
+          - { uuid: 'M1', starttype: 'BIR', startDate: '2026-06-17', endDate: null, individual_uuid: '1', socialgroup_uuid: 'S1', insertdate: '2026-06-17' }
+          # Cas 2 : Membre ayant quitté le groupe après environ 8 mois (240 jours)
+          - { uuid: 'M2', starttype: 'IMG', startDate: '2025-01-01', endDate: '2025-08-29', individual_uuid: '2', socialgroup_uuid: 'S1', insertdate: '2025-01-02' }
+          # Cas 3 : Membre historique présent depuis plus de 5 ans (1850 jours)
+          - { uuid: 'M3', starttype: 'ENU', startDate: '2021-05-01', endDate: '2026-05-25', individual_uuid: '3', socialgroup_uuid: 'S2', insertdate: '2021-05-01' }
+
+    expect:
+      rows:
+        - { membership_uuid: 'M1', starttype: 'birth', statut_membre: 'actif', duree_jours: 10, classe_duree: 'Moins de 6 mois' }
+        - { membership_uuid: 'M2', starttype: 'inmigration', statut_membre: 'quitté', duree_jours: 240, classe_duree: '6-12 mois' }
+        - { membership_uuid: 'M3', starttype: 'enu', statut_membre: 'quitté', duree_jours: 1850, classe_duree: '5 ans et plus' }

@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: stg_inmigration
+    columns:
+      - name: inmigration_uuid
+        data_tests:
+          - not_null
+          - unique
+      
+      - name: migration_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - INTERNAL_INMIGRATION
+                  - EXTERNAL_INMIGRATION
+      
+      - name: individual_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                field: individual_uuid
+                to: ref('stg_individual')

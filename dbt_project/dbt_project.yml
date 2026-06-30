@@ -31,6 +31,12 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   dbt_project:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+    # 1. Configuration pour le dossier models/staging/
+    staging:
+    #  +schema: silver         # Va créer vos vues dans le schéma d'analyse (ex: analytics_silver)
+      +materialized: view     # Les modèles de staging restent des vues légères, pas de stockage inutile
+      
+    # 2. Configuration pour le dossier models/marts/ (Vos tables de BI finales)
+    marts:
+      +schema: gold           # Va créer vos tables finales dans le schéma gold
+      +materialized: table
