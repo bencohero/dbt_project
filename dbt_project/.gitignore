@@ -2,4 +2,7 @@
 target/
 dbt_packages/
 logs/
+logs/*
 .env
+jaffle_shop/
+jaffle_shop/*

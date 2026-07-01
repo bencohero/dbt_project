@@ -1,2 +1,9 @@
 dbt-env
 dbt-env/
+logs/
+logs/*
+*.log
+target/
+target/*
+jaffle_shop/
+jaffle_shop/*
