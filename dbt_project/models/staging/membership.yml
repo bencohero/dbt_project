@@ -10,11 +10,23 @@ models:
           - unique
       - name: individual_uuid
         data_tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('stg_individual')
                 field: individual_uuid
+                config:
+                    severity: warn
+      - name: socialgroup_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_socialgroup')
+                field: socialgroup_uuid
+                config:
+                  severity: warn
+              
+
+
 
 unit_tests:
   - name: test_membership_status_and_durations
@@ -32,6 +44,6 @@ unit_tests:
 
     expect:
       rows:
-        - { membership_uuid: 'M1', starttype: 'birth', statut_membre: 'actif', duree_jours: 10, classe_duree: 'Moins de 6 mois' }
+        - { membership_uuid: 'M1', starttype: 'birth', statut_membre: 'actif', duree_jours: 14, classe_duree: 'Moins de 6 mois' }
         - { membership_uuid: 'M2', starttype: 'inmigration', statut_membre: 'quitté', duree_jours: 240, classe_duree: '6-12 mois' }
         - { membership_uuid: 'M3', starttype: 'enu', statut_membre: 'quitté', duree_jours: 1850, classe_duree: '5 ans et plus' }

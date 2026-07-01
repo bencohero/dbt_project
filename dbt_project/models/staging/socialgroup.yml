@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: stg_socialgroup
+    description: "Modèle de staging pour les groupes sociaux"
+    columns:
+      - name: socialgroup_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: ID_groupe_social
+        data_tests:
+          - not_null
+          - unique
+      - name: chef_groupe_social_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_individual')
+                field: individual_uuid

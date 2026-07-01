@@ -22,21 +22,80 @@ sources:
       
       - name: inmigration
         description: "Table contenant les information d'immigration"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
       
       - name: outmigration
         description: "Table contenant les information d'émigration"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
 
       - name: location
         description: "Table contenant les information de localisation"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
+          - not_null:
+              column_name: extId
+          - unique:
+              column_name: extId
+      
+      - name: locationhierarchy
+        description: "Table contenant les information de hiérarchie de localisation"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
 
       - name: pregnancyobservation
         description: "Table contenant les information d'observation de grossesse"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
       
       - name: pregnancyoutcome
         description: "Table contenant les information d'issue de grossesse"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
       
       - name: residency
         description: "Table contenant les informations de residence"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
 
       - name: membership
         description: "Table contenant les informations d'appartenance"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
+      
+      - name: socialgroup
+        description: "Table contenant les informations de groupe social"
+        tests:
+          - unique:
+              column_name: uuid
+          - not_null:
+              column_name: uuid
+          - not_null:
+              column_name: extId
+          - unique:
+              column_name: extId

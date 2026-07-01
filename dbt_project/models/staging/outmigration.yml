@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_outmigration
+    description: "Modèle de staging pour les informations d'émigration"
+    columns:
+      - name: outmigration_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: individual_uuid
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_individual')
+                field: individual_uuid
+                config:
+                    severity: warn

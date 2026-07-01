@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_location
+    description: "Modèle de staging pour les informations de localisation"
+    columns:
+      - name: location_uuid
+        data_tests:
+          - not_null
+          - unique
+      - name: ID_localisation
+        data_tests:
+          - not_null
+          - unique
